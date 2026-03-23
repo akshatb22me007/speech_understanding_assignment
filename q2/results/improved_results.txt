@@ -1,0 +1,12 @@
+EER: 0.17910261656208265
+EER_threshold: 2114.30908203125
+ROC_AUC: 0.9093466667398685
+PR_AUC: 0.2624633115258829
+Accuracy_at_EER_threshold: 0.8208461696446909
+Precision_at_EER_threshold: 0.10752161282419237
+Recall_at_EER_threshold: 0.8209513629075361
+F1_at_EER_threshold: 0.19014019125429393
+Confusion_matrix_TN: 116829
+Confusion_matrix_FP: 25499
+Confusion_matrix_FN: 670
+Confusion_matrix_TP: 3072

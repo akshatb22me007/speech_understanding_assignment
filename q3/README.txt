@@ -19,8 +19,5 @@ Files:
 
 Notes:
 - The code defaults to the local demo dataset in q3/data/.
-- If you provide the real Kaggle Common Voice CSV/audio folders, the same
-  scripts can be pointed at those paths with --csv and --audio-dir.
-- The DNSMOS script uses a proxy when the ONNX runtime/model is unavailable.
 - The ASR script uses wav2vec2 only if local cached weights exist; otherwise it
   falls back to an offline TinyASR CTC model.

@@ -1,0 +1,9 @@
+filename,text,up_votes,down_votes,age,gender,accent
+clip_001.wav,hello world,2,0,old,male,us
+clip_002.wav,good morning,2,0,young,female,england
+clip_003.wav,speech data,2,0,twenties,male,indian
+clip_004.wav,open source,2,0,thirties,female,canada
+clip_005.wav,fair speech,2,0,seventies,other,australia
+clip_006.wav,hello world,2,0,,male,scotland
+clip_007.wav,good morning,2,0,fourties,,ireland
+clip_008.wav,open source,2,0,twenties,female,

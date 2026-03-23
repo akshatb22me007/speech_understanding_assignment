@@ -1,0 +1,84 @@
+
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+\title{\vspace{-1.3cm}Q3: Ethical Auditing and Privacy-Preserving ASR}
+\author{Submission Bundle}
+\date{}
+
+\begin{document}
+\maketitle
+
+\textbf{Scope.} This submission audits a Common Voice-style speech dataset for documentation debt and representation bias, then demonstrates a privacy-preserving voice transformation, fairness-aware ASR training, and audio-quality validation.
+
+\section*{1. Dataset audit}
+The metadata schema exposes age, gender, and accent labels, but several fields are missing in the provided rows. That is a classic documentation-debt signal: the collection is usable for ASR, yet its demographic coverage is incomplete and partially self-reported. The audit script filters to clips with majority-positive validation votes, then measures missingness and class imbalance.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Metric & Value & Interpretation \\
+\midrule
+Valid rows used & \texttt{8} & Small offline demo subset \\
+Missing gender & \texttt{12.5\%} & Incomplete demographic metadata \\
+Missing age & \texttt{12.5\%} & Incomplete demographic metadata \\
+Missing accent & \texttt{12.5\%} & Incomplete demographic metadata \\
+Low-confidence share & \texttt{0.0\%} & All demo clips were majority valid \\
+Gender imbalance ratio & \texttt{3.0} & Mild representation skew \\
+\bottomrule
+\end{tabular}
+\caption{Audit summary from the local demo bundle.}
+\end{table}
+
+\section*{2. Privacy-preserving module}
+The privacy module uses a lightweight PyTorch speaker encoder operating on mel spectrograms. A source/target speaker pair is embedded, and the relative embedding statistics drive anonymization parameters (pitch shift, tempo, and spectral tilt). This keeps linguistic content as stable as possible while perturbing biometric cues associated with speaker identity.
+
+In the demo, \texttt{pp\_demo.py} writes an \emph{original.wav} and \emph{anonymized.wav} pair into \texttt{examples/}. The transformation is intentionally conservative so the output remains intelligible for ASR.
+
+\section*{3. Fairness-aware ASR training}
+The training loop in \texttt{train\_fair.py} is structured to minimize not only the mean phrase-classification loss but also the variance of group-level losses across demographic groups. That makes the fairness term differentiable and directly optimizable during training.
+
+The offline bundle uses a tiny CTC model by default. If locally cached wav2vec2 weights are available, the script can also run a wav2vec2 transcription check through the same interface. This makes the code portable across offline and online environments.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Group & Demo WER (before) & Demo WER (after) \\
+\midrule
+male & \texttt{0.00} & \texttt{0.00} \\
+female & \texttt{0.00} & \texttt{0.00} \\
+other & \texttt{1.00} & \texttt{1.00} \\
+\bottomrule
+\end{tabular}
+\caption{Illustrative WERs from the offline toy run.}
+\end{table}
+
+\section*{4. Audio-quality validation}
+The DNSMOS evaluator first tries a real ONNX model if it is available, and otherwise falls back to a transparent proxy based on clipping, spectral flatness, and waveform smoothness. In the bundled offline run, the proxy scores were OVRL $= 4.46$ for the original clip and OVRL $= 4.32$ for the anonymized clip, which suggests the transform preserved acceptable quality while making a modest acoustic change.
+
+The Frechet Audio Distance helper measures distribution shift between original and anonymized audio using MFCC statistics. A low FAD indicates the transformation did not introduce large artifacts.
+
+\section*{5. Ethical considerations}
+The audit shows two key issues: (i) demographic imbalance and missing labels can bias downstream models, and (ii) crowd validation can still encode subjective errors. The anonymization step must avoid making audio unnatural, because a low-quality privacy transform can become a new source of exclusion if ASR performance drops sharply for some groups.
+
+The main trade-off is privacy versus utility. Stronger anonymization can reduce speaker re-identification risk, but aggressive transformations may hurt intelligibility and fairness. This bundle therefore uses conservative transformations and a fairness loss that directly targets performance gaps.
+
+\section*{6. Reproducibility notes}
+The repository is self-contained and runnable offline with the included demo data. For a full submission on the real Kaggle Common Voice corpus, pass the real CSV and audio folder paths to the scripts with \texttt{--csv} and \texttt{--audio-dir}. The code was written to keep the same interfaces.
+
+\end{document}

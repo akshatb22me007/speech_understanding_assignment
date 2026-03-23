@@ -1,0 +1,34 @@
+{
+  "n_rows":8,
+  "missing_gender":0.125,
+  "missing_age":0.125,
+  "missing_accent":0.125,
+  "gender_distribution":{
+    "male":3,
+    "female":3,
+    "other":1,
+    "nan":1
+  },
+  "age_distribution":{
+    "twenties":2,
+    "old":1,
+    "young":1,
+    "thirties":1,
+    "seventies":1,
+    "nan":1,
+    "fourties":1
+  },
+  "accent_distribution":{
+    "us":1,
+    "england":1,
+    "indian":1,
+    "canada":1,
+    "australia":1,
+    "scotland":1,
+    "ireland":1,
+    "nan":1
+  },
+  "confidence_mean":0.6666666667,
+  "low_confidence_share":0.0,
+  "gender_imbalance_ratio":3.0
+}

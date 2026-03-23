@@ -7,6 +7,14 @@
 
 ## Data
 - Uses LibriSpeech dev-clean laid out under data/LibriSpeech/dev-clean (already referenced in configs/config.yaml).
+```bash
+mkdir data
+cd data
+
+# small dataset
+wget https://www.openslr.org/resources/12/dev-clean.tar.gz
+tar -xvf dev-clean.tar.gz
+```
 
 ## Training
 - Config: configs/config.yaml (key fields: train_split=0.8, seed=42, batch_size=8, epochs=20, lr=1e-4, device=cuda).
